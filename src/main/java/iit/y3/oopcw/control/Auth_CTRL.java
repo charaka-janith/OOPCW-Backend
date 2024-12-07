@@ -4,6 +4,7 @@ import iit.y3.oopcw.aspects.EnableResultLogger;
 import iit.y3.oopcw.jwt.JwtUtil;
 import iit.y3.oopcw.jwt.model.AuthRequest;
 import iit.y3.oopcw.jwt.model.AuthResponse;
+import iit.y3.oopcw.model.User;
 import iit.y3.oopcw.service.User_SRVC;
 import iit.y3.oopcw.springsecurity.SpringSecurityUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 public class Auth_CTRL {
@@ -48,7 +51,9 @@ public class Auth_CTRL {
     public ResponseEntity<?> createAuthenticationToken(
             @RequestBody AuthRequest authenticationRequest
             , HttpServletRequest absoluteRequest) {
-        logger.info("Calling Authentication api. : {}", absoluteRequest.getRequestURL());
+        logger.info("Calling Authentication api. Username: {}, URL: {}"
+                , authenticationRequest.getUsername()
+                , absoluteRequest.getRequestURL());
         UserDetails userDetails = null;
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -66,7 +71,8 @@ public class Auth_CTRL {
             final String jwt = jwtTokenUtil.generateToken(userDetails);
             String sequence = userSRVC.getNextSequenceValue();
             String role = userSRVC.getUserRole_byUserName(userDetails.getUsername());
-            return ResponseEntity.ok(new AuthResponse(jwt, sequence, role));
+            Optional<User> logged_in_userData = userSRVC.findByUsername(userDetails.getUsername());
+            return ResponseEntity.ok(new AuthResponse(jwt, sequence, role, logged_in_userData.get().getFirstName(), logged_in_userData.get().getLastName()));
         } catch (NullPointerException nullPointerException) {
             throw new BadCredentialsException("Your username and password do not match. Please try again !");
         }

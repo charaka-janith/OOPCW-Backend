@@ -53,11 +53,12 @@ public class SecurityConfigurer {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(
-                                        "/authenticate",
-                                        "/oop-cw/public/*",
-                                        "/oop-cw/public/**",
-                                        "/oop-cw/public/***",
-                                        "/oop-cw/public/*****"
+                                        "/authenticate"
+                                        , "/oop-cw/public/*"
+                                        , "/oop-cw/public/**"
+                                        , "/oop-cw/public/***"
+                                        , "/oop-cw/public/*****"
+                                        , "/oop-cw/vendor/register"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 ).sessionManagement(sessionManagement ->

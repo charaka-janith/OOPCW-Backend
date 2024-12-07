@@ -11,6 +11,7 @@ public interface User_SRVC {
     public static final int MAX_FAILED_ATTEMPTS = 5;
     public static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
     User registerCustomer(@Valid User user);
+    User registerVendor(@Valid User user);
     ResponseEntity<Api_RSPNS> validateUserName(String userName);
     Boolean resetPassword(Long id, String newPassword, String oldPassword);
     User getCurrentUser();

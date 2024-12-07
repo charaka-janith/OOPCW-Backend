@@ -40,6 +40,34 @@ public class User_SRVC_IMPL implements User_SRVC {
 
     @Transactional
     @Override
+    public User registerVendor(@Valid User user) {
+        if (user.getFirstName() != null
+                && !user.getFirstName().chars().allMatch(Character::isLetter)
+                || user.getLastName() != null
+                && !user.getLastName().chars().allMatch(Character::isLetter)) {
+            throw new PreConditionFailedException("Names should contain string characters only");
+        }
+        if (this.findByUsername(user.getUserName()).isPresent()) {
+            throw new PreConditionFailedException("Username already exists");
+        }
+        PasswordHistory passwordHistory = new PasswordHistory();
+        LocalDate expiryDate = LocalDate.now().plusDays(30);
+        user.setExpiryDate(expiryDate);
+        user.setPassword(this.passwordEncoder.encode("0000"));
+        user.setAccountNonLocked(true);
+        user.setFailedAttempt(0);
+        user.setRole("VENDOR");
+        user.setStatus("CREATED");
+        user = this.userREPO.save(user);
+        // save password history
+        passwordHistory.setUser(user);
+        passwordHistory.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        this.passwordHistory_REPO.save(passwordHistory);
+        return user;
+    }
+
+    @Transactional
+    @Override
     public User registerCustomer(@Valid User user) {
         if (user.getFirstName() != null && !user.getFirstName().chars().allMatch(Character::isLetter)
                 || user.getLastName() != null && !user.getLastName().chars().allMatch(Character::isLetter)) {

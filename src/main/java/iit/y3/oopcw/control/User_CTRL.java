@@ -16,6 +16,9 @@ public interface User_CTRL {
 	
     @PostMapping("/public/user/register")
     ResponseEntity<Api_RSPNS> registerCustomer(@Valid @RequestBody CustomerInfo_RQST customerInfoRequest);
+
+    @PostMapping("/vendor/register")
+    ResponseEntity<Api_RSPNS> registerVendor(@Valid @RequestBody CustomerInfo_RQST customerInfoRequest);
     
     @GetMapping("/public/user/{userName}/validate")	
     ResponseEntity<Api_RSPNS> validateUserName(@PathVariable("userName") @NotBlank String userName);

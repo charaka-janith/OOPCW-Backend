@@ -42,12 +42,24 @@ public class User_CTRL_IMPL implements User_CTRL {
 
     @Override
     public ResponseEntity<Api_RSPNS> registerCustomer(@Valid CustomerInfo_RQST customerInfoRequest) {
+        logger.info("Calling Register Customer API. Customer Info: {}", customerInfoRequest);
         this.userService.registerCustomer(this.modelMapper.map(customerInfoRequest.getCusInfo(), User.class));
         return new Api_RSPNS.ApiResponseBuilder<>()
                 .withApiStatusCode(Constants.Status.SUCCESS)
                 .withMessage(Constants.Status.SUCCESS.description())
                 .withStatusCode(HttpStatus.OK.value())
                 .withData("User Saved Successfully!").build();
+    }
+
+    @Override
+    public ResponseEntity<Api_RSPNS> registerVendor(@Valid CustomerInfo_RQST customerInfoRequest) {
+        logger.info("Calling Register Vendor API. Vendor Info: {}", customerInfoRequest);
+        this.userService.registerVendor(this.modelMapper.map(customerInfoRequest.getCusInfo(), User.class));
+        return new Api_RSPNS.ApiResponseBuilder<>()
+                .withApiStatusCode(Constants.Status.SUCCESS)
+                .withMessage(Constants.Status.SUCCESS.description())
+                .withStatusCode(HttpStatus.OK.value())
+                .withData("Vendor Saved Successfully!").build();
     }
 
     @Override
